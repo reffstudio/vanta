@@ -4,7 +4,33 @@ import { useEffect } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { X, Calendar, Tag } from "lucide-react"
 import type { Project } from "@/lib/projects"
-import { ProjectLayoutImage } from "@/components/project-layout-image"
+
+function ModalImage({
+  src,
+  alt,
+  layoutId,
+}: {
+  src: string
+  alt: string
+  layoutId?: string | null
+}) {
+  const className = "block w-full h-auto max-w-full"
+
+  if (layoutId) {
+    return (
+      <motion.img
+        layoutId={layoutId}
+        src={src}
+        alt={alt}
+        draggable={false}
+        className={className}
+        transition={{ type: "spring", stiffness: 260, damping: 30 }}
+      />
+    )
+  }
+
+  return <img src={src} alt={alt} draggable={false} className={className} loading="lazy" />
+}
 
 export function ProjectModal({
   project,
@@ -29,11 +55,16 @@ export function ProjectModal({
     }
   }, [project, onClose])
 
+  const galleryItems =
+    project?.gallery.filter(
+      (item) => !(item.type === "image" && item.url === project.image),
+    ) ?? []
+
   return (
     <AnimatePresence>
       {project && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -42,13 +73,13 @@ export function ProjectModal({
           aria-label={project.title}
         >
           <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-md"
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
             onClick={onClose}
             aria-hidden="true"
           />
 
           <motion.div
-            className="relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-white/10 bg-neutral-950 shadow-2xl shadow-black"
+            className="relative z-10 flex max-h-[100dvh] w-full max-w-4xl flex-col overflow-y-auto overscroll-contain bg-black sm:max-h-[92dvh] sm:rounded-3xl sm:border sm:border-white/10 sm:shadow-2xl sm:shadow-black"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -58,24 +89,19 @@ export function ProjectModal({
               type="button"
               onClick={onClose}
               aria-label="Cerrar"
-              className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/50 text-white backdrop-blur transition hover:bg-brand hover:text-brand-foreground"
+              className="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur transition hover:bg-brand hover:text-brand-foreground sm:right-4 sm:top-4"
             >
               <X className="h-5 w-5" />
             </button>
 
-            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-3xl">
-              <ProjectLayoutImage
-                layoutId={layoutId ?? undefined}
-                src={project.image}
-                alt={project.title}
-                className="h-full w-full"
-                transition={{ type: "spring", stiffness: 260, damping: 30 }}
-              />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-neutral-950 to-transparent" />
-            </div>
+            <ModalImage
+              src={project.image}
+              alt={project.title}
+              layoutId={layoutId}
+            />
 
             <motion.div
-              className="p-6 sm:p-8"
+              className="px-5 py-6 sm:px-8 sm:py-8"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.12, ease: "easeOut" }}
@@ -106,42 +132,40 @@ export function ProjectModal({
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-white text-balance sm:text-4xl">
                 {project.title}
               </h2>
-              <p className="mt-4 max-w-2xl leading-relaxed text-neutral-300 text-pretty">
+              <p className="mt-4 leading-relaxed text-neutral-300 text-pretty">
                 {project.description}
               </p>
-
-              <div className="mt-8 flex flex-col gap-4">
-                {project.gallery
-                  .filter((item) => !(item.type === "image" && item.url === project.image))
-                  .map((item) => (
-                    <div
-                      key={item._key}
-                      className="w-full overflow-hidden rounded-xl border border-white/10 bg-neutral-900"
-                    >
-                      {item.type === "video" ? (
-                        <video
-                          src={item.url}
-                          controls
-                          playsInline
-                          className="h-auto w-full bg-black"
-                        />
-                      ) : (
-                        <div
-                          role="img"
-                          aria-label={item.alt || `${project.title} imagen`}
-                          className="h-auto min-h-48 w-full bg-contain bg-center bg-no-repeat"
-                          style={{ backgroundImage: `url("${item.url || "/placeholder.svg"}")` }}
-                        />
-                      )}
-                      {item.caption && (
-                        <p className="border-t border-white/10 px-4 py-3 text-sm text-neutral-400">
-                          {item.caption}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-              </div>
             </motion.div>
+
+            {galleryItems.length > 0 && (
+              <div className="flex flex-col">
+                {galleryItems.map((item) => (
+                  <figure key={item._key} className="m-0">
+                    {item.type === "video" ? (
+                      <video
+                        src={item.url}
+                        controls
+                        playsInline
+                        className="block w-full bg-black"
+                      />
+                    ) : (
+                      <img
+                        src={item.url || "/placeholder.svg"}
+                        alt={item.alt || `${project.title} imagen`}
+                        draggable={false}
+                        loading="lazy"
+                        className="block w-full h-auto max-w-full"
+                      />
+                    )}
+                    {item.caption && (
+                      <figcaption className="px-5 py-3 text-sm text-neutral-500 sm:px-8">
+                        {item.caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                ))}
+              </div>
+            )}
           </motion.div>
         </motion.div>
       )}
