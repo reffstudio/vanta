@@ -3,17 +3,20 @@
 import { useCallback, useRef, useState } from "react"
 import { motion } from "motion/react"
 import type { Project } from "@/lib/projects"
+import { ProjectLayoutImage } from "@/components/project-layout-image"
 
 const HOLD_DURATION = 550 // ms
 
 export function ProjectCard({
   project,
   layoutId,
+  imageLayoutId,
   onOpen,
   onHoverChange,
 }: {
   project: Project
-  layoutId: string
+  layoutId?: string
+  imageLayoutId?: string
   onOpen: (project: Project, layoutId: string) => void
   onHoverChange: (hovered: boolean) => void
 }) {
@@ -33,7 +36,7 @@ export function ProjectCard({
     setHolding(true)
     timerRef.current = setTimeout(() => {
       setHolding(false)
-      onOpen(project, layoutId)
+      onOpen(project, layoutId ?? `${project.id}-static`)
     }, HOLD_DURATION)
   }, [onOpen, project, layoutId])
 
@@ -50,19 +53,21 @@ export function ProjectCard({
     <motion.button
       type="button"
       aria-label={`Abrir proyecto ${project.title}. Mantén presionado o presiona Enter.`}
-      className="group relative block w-full cursor-pointer touch-none select-none rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+      className="vanta-project-card group relative block w-full cursor-pointer touch-none select-none rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-black"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onContextMenu={(e) => e.preventDefault()}
       onPointerDown={(e) => {
-        e.preventDefault()
+        if (e.pointerType === "touch") e.preventDefault()
         startHold()
       }}
       onPointerUp={clearTimer}
       onPointerCancel={clearTimer}
+      onPointerLeave={clearTimer}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault()
-          onOpen(project, layoutId)
+          onOpen(project, layoutId ?? `${project.id}-static`)
         }
       }}
       animate={{ scale: holding ? 1.35 : hovered ? 1.06 : 1 }}
@@ -71,19 +76,20 @@ export function ProjectCard({
           ? { duration: HOLD_DURATION / 1000, ease: [0.4, 0, 0.6, 1] }
           : { type: "spring", stiffness: 260, damping: 24 }
       }
-      style={{ zIndex: holding ? 20 : "auto" }}
+      style={{
+        zIndex: holding ? 20 : "auto",
+        WebkitTouchCallout: "none",
+        transformOrigin: "center center",
+      }}
     >
       <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-white/10 bg-neutral-900 shadow-xl shadow-black/60">
-        <motion.img
-          layoutId={layoutId}
-          src={project.image || "/placeholder.svg"}
+        <ProjectLayoutImage
+          layoutId={imageLayoutId ?? layoutId}
+          src={project.image}
           alt={project.title}
-          loading="lazy"
-          className="h-full w-full object-cover transition-[filter] duration-500 group-hover:brightness-110"
-          draggable={false}
+          className="h-full w-full transition-[filter] duration-500 group-hover:brightness-110"
         />
 
-        {/* label */}
         <motion.div
           initial={false}
           animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 8 }}

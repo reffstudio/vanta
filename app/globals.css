@@ -169,25 +169,38 @@
 
 @keyframes vanta-scroll-up {
   from {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateY(-50%);
+    transform: translate3d(0, -50%, 0);
   }
 }
 
-.vanta-column {
+.vanta-project-card {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.vanta-column-track {
+  width: 100%;
   animation: vanta-scroll-up var(--vanta-duration, 40s) linear infinite;
   animation-delay: var(--vanta-delay, 0s);
   will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-.vanta-column[data-paused='true'] {
+.vanta-column-item {
+  flex-shrink: 0;
+}
+
+.vanta-column-track[data-paused='true'] {
   animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .vanta-column {
+  .vanta-column-track {
     animation: none;
   }
 

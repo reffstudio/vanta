@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { X, Calendar, Tag } from "lucide-react"
 import type { Project } from "@/lib/projects"
+import { ProjectLayoutImage } from "@/components/project-layout-image"
 
 export function ProjectModal({
   project,
@@ -63,21 +64,13 @@ export function ProjectModal({
             </button>
 
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-3xl">
-              {layoutId ? (
-                <motion.img
-                  layoutId={layoutId}
-                  src={project.image}
-                  alt={project.title}
-                  className="h-full w-full object-cover"
-                  transition={{ type: "spring", stiffness: 260, damping: 30 }}
-                />
-              ) : (
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="h-full w-full object-cover"
-                />
-              )}
+              <ProjectLayoutImage
+                layoutId={layoutId ?? undefined}
+                src={project.image}
+                alt={project.title}
+                className="h-full w-full"
+                transition={{ type: "spring", stiffness: 260, damping: 30 }}
+              />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-neutral-950 to-transparent" />
             </div>
 
@@ -133,10 +126,11 @@ export function ProjectModal({
                           className="h-auto w-full bg-black"
                         />
                       ) : (
-                        <img
-                          src={item.url || "/placeholder.svg"}
-                          alt={item.alt || `${project.title} imagen`}
-                          className="h-auto w-full object-contain"
+                        <div
+                          role="img"
+                          aria-label={item.alt || `${project.title} imagen`}
+                          className="h-auto min-h-48 w-full bg-contain bg-center bg-no-repeat"
+                          style={{ backgroundImage: `url("${item.url || "/placeholder.svg"}")` }}
                         />
                       )}
                       {item.caption && (
