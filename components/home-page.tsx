@@ -36,6 +36,10 @@ export function HomePage({ projects }: { projects: Project[] }) {
             className="w-full rounded-3xl shadow-2xl shadow-black/60 ring-1 ring-white/10"
           />
 
+          <p className="w-full text-center font-luxia text-[11px] uppercase leading-snug tracking-[0.18em] text-white/90 sm:text-xs sm:tracking-[0.22em]">
+            Fotografía &amp; Dirección Visual
+          </p>
+
           <motion.span
             className="vanta-cta-ring pointer-events-auto flex w-full rounded-full"
             whileHover={{ scale: 1.04 }}
