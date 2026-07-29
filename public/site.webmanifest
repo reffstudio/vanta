@@ -1,6 +1,8 @@
 {
-  "name": "VANTA — Photography & Video by Nery Tovar",
+  "name": "VANTA — Fotografía y Video por Nery Tovar",
   "short_name": "VANTA",
+  "description": "Portafolio de fotografía y video de Nery Tovar. Conciertos, retratos, parejas y producción audiovisual.",
+  "lang": "es-MX",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
