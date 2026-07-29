@@ -190,4 +190,78 @@
   .vanta-column {
     animation: none;
   }
+
+  .vanta-cta-ring {
+    animation: none;
+    box-shadow: 0 0 16px rgba(252, 76, 19, 0.35);
+  }
+
+  .vanta-pointer-press {
+    animation: none;
+  }
+}
+
+@keyframes vanta-pointer-press {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+  }
+  20% {
+    transform: scale(1) translateY(0);
+  }
+  45% {
+    transform: scale(0.78) translateY(2px);
+  }
+  65% {
+    transform: scale(0.78) translateY(2px);
+  }
+}
+
+.vanta-pointer-press {
+  transform-origin: center bottom;
+  animation: vanta-pointer-press 1.6s ease-in-out infinite;
+}
+
+@keyframes vanta-cta-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 300% 50%;
+  }
+}
+
+@keyframes vanta-cta-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 12px rgba(252, 76, 19, 0.25),
+      0 0 28px rgba(252, 76, 19, 0.12);
+  }
+  50% {
+    box-shadow:
+      0 0 22px rgba(252, 76, 19, 0.55),
+      0 0 44px rgba(252, 76, 19, 0.28);
+  }
+}
+
+.vanta-cta-ring {
+  padding: 1.5px;
+  background: linear-gradient(
+    90deg,
+    rgba(252, 76, 19, 0.15),
+    #fc4c13,
+    #ff9f6b,
+    #fc4c13,
+    rgba(252, 76, 19, 0.15)
+  );
+  background-size: 300% 100%;
+  animation:
+    vanta-cta-shimmer 3s linear infinite,
+    vanta-cta-pulse 2.4s ease-in-out infinite;
+  transition: box-shadow 0.3s ease;
+}
+
+.vanta-cta-ring:hover {
+  animation-duration: 1.8s, 1.6s;
 }

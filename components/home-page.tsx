@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "motion/react"
-import { Pointer } from "lucide-react"
+import { Pointer, Zap } from "lucide-react"
 import type { Project } from "@/lib/projects"
 import { FloatingGallery } from "@/components/floating-gallery"
 import { ProjectModal } from "@/components/project-modal"
@@ -39,22 +39,29 @@ export function HomePage({ projects }: { projects: Project[] }) {
 
       <div className="pointer-events-none absolute left-1/2 top-6 z-40 -translate-x-1/2">
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-4 py-2 text-xs text-neutral-300 backdrop-blur-md">
-          <Pointer className="h-3.5 w-3.5 text-brand" />
+          <span className="vanta-pointer-press inline-flex">
+            <Pointer className="h-3.5 w-3.5 text-brand" />
+          </span>
           <span>Mantén presionado un proyecto para abrir</span>
         </div>
       </div>
 
       <div className="absolute inset-x-0 bottom-8 z-40 flex justify-center">
-        <motion.button
-          type="button"
-          onClick={() => setContactOpen(true)}
+        <motion.span
+          className="vanta-cta-ring inline-flex rounded-full"
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.97 }}
-          className="group flex items-center gap-3 rounded-full border border-brand/40 bg-black/50 px-7 py-4 text-sm font-semibold uppercase tracking-[0.15em] text-white shadow-lg shadow-black/50 backdrop-blur-md transition hover:border-brand hover:bg-black/70"
         >
-          <span className="h-2 w-2 rounded-full bg-brand transition group-hover:scale-125" />
-          Agendar Sesión
-        </motion.button>
+          <motion.button
+            type="button"
+            onClick={() => setContactOpen(true)}
+            className="group relative flex items-center gap-3 rounded-full bg-black/70 px-7 py-4 text-sm font-semibold uppercase tracking-[0.15em] text-white shadow-lg shadow-black/50 backdrop-blur-md transition hover:bg-black/85"
+          >
+            <Zap className="h-4 w-4 fill-brand text-brand transition group-hover:scale-110" />
+            Agendar Sesión
+            <Zap className="h-4 w-4 fill-brand text-brand transition group-hover:scale-110" />
+          </motion.button>
+        </motion.span>
       </div>
 
       <ProjectModal
