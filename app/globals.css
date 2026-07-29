@@ -186,26 +186,26 @@
 
 .vanta-column-track {
   width: 100%;
-  animation: vanta-scroll-up var(--vanta-duration, 40s) linear infinite;
-  animation-delay: var(--vanta-delay, 0s);
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+.vanta-column-scrub {
+  touch-action: none;
+  cursor: grab;
+  pointer-events: auto;
+}
+
+.vanta-column-scrub:active {
+  cursor: grabbing;
 }
 
 .vanta-column-item {
   flex-shrink: 0;
 }
 
-.vanta-column-track[data-paused='true'] {
-  animation-play-state: paused;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .vanta-column-track {
-    animation: none;
-  }
-
   .vanta-cta-ring {
     animation: none;
     box-shadow: 0 0 16px rgba(252, 76, 19, 0.35);

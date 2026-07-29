@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import type { Project } from "@/lib/projects"
+import { useColumnScroll } from "@/lib/use-column-scroll"
 import { ProjectCard } from "@/components/project-card"
 
 type ColumnConfig = {
@@ -30,7 +31,6 @@ function cardLayout(colIndex: number, localIndex: number) {
 
   return {
     xOffset: ((r1 - 0.5) * 32).toFixed(2),
-    // Same localIndex always yields the same gap/width in both duplicated segments.
     gapVh: localIndex === 0 ? "0" : (14 + r2 * 10).toFixed(2),
     width: (62 + r3 * 28).toFixed(2),
   }
@@ -81,6 +81,53 @@ function ColumnSegment({
   )
 }
 
+function GalleryColumn({
+  colIndex,
+  col,
+  items,
+  paused,
+  onOpen,
+  onHoverChange,
+}: {
+  colIndex: number
+  col: ColumnConfig
+  items: Project[]
+  paused: boolean
+  onOpen: (project: Project, layoutId: string) => void
+  onHoverChange: (hovered: boolean) => void
+}) {
+  const { trackRef, scrubHandlers } = useColumnScroll({
+    duration: col.duration,
+    delay: col.delay,
+    paused,
+  })
+
+  return (
+    <div
+      className={`vanta-column-scrub relative h-full overflow-hidden ${col.visibility}`}
+      {...scrubHandlers}
+    >
+      <div ref={trackRef} className="vanta-column-track pointer-events-auto flex flex-col items-center">
+        <ColumnSegment
+          colIndex={colIndex}
+          items={items}
+          segmentKey={`${colIndex}-a`}
+          onOpen={onOpen}
+          onHoverChange={onHoverChange}
+        />
+        <ColumnSegment
+          colIndex={colIndex}
+          items={items}
+          segmentKey={`${colIndex}-b`}
+          mirror
+          onOpen={onOpen}
+          onHoverChange={onHoverChange}
+        />
+      </div>
+    </div>
+  )
+}
+
 export function FloatingGallery({
   projects,
   onOpen,
@@ -110,38 +157,17 @@ export function FloatingGallery({
         if (!items.length) return null
 
         return (
-          <div key={colIndex} className={`relative h-full overflow-hidden ${col.visibility}`}>
-            <div
-              className="vanta-column-track pointer-events-auto flex flex-col items-center"
-              data-paused={paused || pausedColumns[colIndex] ? "true" : "false"}
-              style={
-                {
-                  "--vanta-duration": col.duration,
-                  "--vanta-delay": col.delay,
-                } as React.CSSProperties
-              }
-            >
-              <ColumnSegment
-                colIndex={colIndex}
-                items={items}
-                segmentKey={`${colIndex}-a`}
-                onOpen={onOpen}
-                onHoverChange={(hovered) =>
-                  setPausedColumns((prev) => ({ ...prev, [colIndex]: hovered }))
-                }
-              />
-              <ColumnSegment
-                colIndex={colIndex}
-                items={items}
-                segmentKey={`${colIndex}-b`}
-                mirror
-                onOpen={onOpen}
-                onHoverChange={(hovered) =>
-                  setPausedColumns((prev) => ({ ...prev, [colIndex]: hovered }))
-                }
-              />
-            </div>
-          </div>
+          <GalleryColumn
+            key={colIndex}
+            colIndex={colIndex}
+            col={col}
+            items={items}
+            paused={paused || !!pausedColumns[colIndex]}
+            onOpen={onOpen}
+            onHoverChange={(hovered) =>
+              setPausedColumns((prev) => ({ ...prev, [colIndex]: hovered }))
+            }
+          />
         )
       })}
     </div>

@@ -23,6 +23,7 @@ export function ProjectCard({
   const [hovered, setHovered] = useState(false)
   const [holding, setHolding] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pointerStartYRef = useRef(0)
 
   const clearTimer = useCallback(() => {
     if (timerRef.current) {
@@ -59,7 +60,11 @@ export function ProjectCard({
       onContextMenu={(e) => e.preventDefault()}
       onPointerDown={(e) => {
         if (e.pointerType === "touch") e.preventDefault()
+        pointerStartYRef.current = e.clientY
         startHold()
+      }}
+      onPointerMove={(e) => {
+        if (Math.abs(e.clientY - pointerStartYRef.current) > 10) clearTimer()
       }}
       onPointerUp={clearTimer}
       onPointerCancel={clearTimer}
