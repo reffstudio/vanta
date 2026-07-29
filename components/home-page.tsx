@@ -28,7 +28,7 @@ export function HomePage({ projects }: { projects: Project[] }) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex w-56 flex-col items-center gap-5 sm:w-72"
+          className="@container flex w-56 flex-col items-center gap-5 sm:w-72"
         >
           <img
             src="/vanta-logo.png"
@@ -36,7 +36,7 @@ export function HomePage({ projects }: { projects: Project[] }) {
             className="w-full rounded-3xl shadow-2xl shadow-black/60 ring-1 ring-white/10"
           />
 
-          <p className="w-full text-center font-luxia text-[11px] uppercase leading-snug tracking-[0.18em] text-white/90 sm:text-xs sm:tracking-[0.22em]">
+          <p className="vanta-tagline w-full text-center font-luxia uppercase text-white/90">
             Fotografía &amp; Dirección Visual
           </p>
 

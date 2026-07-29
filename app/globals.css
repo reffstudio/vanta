@@ -184,6 +184,13 @@
   user-select: none;
 }
 
+.vanta-tagline {
+  white-space: nowrap;
+  line-height: 1.2;
+  font-size: clamp(8px, 3.9cqi, 12px);
+  letter-spacing: clamp(0.03em, 0.28cqi, 0.18em);
+}
+
 .vanta-column-track {
   width: 100%;
   will-change: transform;
