@@ -80,7 +80,7 @@ export default function RootLayout({
       <body className="antialiased bg-black">
         <JsonLd />
         {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <Analytics />
       </body>
     </html>
   )
