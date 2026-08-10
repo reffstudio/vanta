@@ -11,7 +11,7 @@ export function PoweredByReff() {
       <img
         src="/reff-studio-logo.png"
         alt="REFF STUDIO"
-        className="h-3.5 w-auto mix-blend-screen"
+        className="h-3.5 w-auto"
       />
     </a>
   )
