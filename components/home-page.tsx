@@ -8,6 +8,7 @@ import { FloatingGallery } from "@/components/floating-gallery"
 import { ProjectModal } from "@/components/project-modal"
 import { ContactModal } from "@/components/contact-modal"
 import { SocialLinks } from "@/components/social-links"
+import { PoweredByReff } from "@/components/powered-by-reff"
 
 export function HomePage({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<{ project: Project; layoutId: string } | null>(null)
@@ -60,13 +61,14 @@ export function HomePage({ projects }: { projects: Project[] }) {
         </motion.div>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-8 z-40 flex justify-center px-4">
+      <div className="pointer-events-none absolute inset-x-0 bottom-4 z-40 flex flex-col items-center gap-3 px-4 sm:bottom-6">
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-4 py-2 text-xs text-neutral-300 backdrop-blur-md">
           <span className="vanta-pointer-press inline-flex">
             <Pointer className="h-3.5 w-3.5 text-brand" />
           </span>
           <span>Mantén presionado un proyecto para abrir</span>
         </div>
+        <PoweredByReff />
       </div>
 
       <ProjectModal
