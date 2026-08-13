@@ -1,8 +1,7 @@
-import { client } from "@/sanity/client"
+import { client, sanityFetchOptions } from "@/sanity/client"
 import { PROJECTS_QUERY, PROJECT_BY_SLUG_QUERY } from "@/sanity/queries"
 import { urlFor } from "@/sanity/image"
 import type { Project, ProjectMedia } from "@/lib/projects"
-import { projects as fallbackProjects } from "@/lib/projects"
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types"
 
 type SanityImage = SanityImageSource & {
@@ -97,21 +96,19 @@ function mapSanityProject(project: SanityProject): Project {
 }
 
 export async function getProjects(): Promise<Project[]> {
-  try {
-    const data = await client.fetch<SanityProject[]>(PROJECTS_QUERY)
-    if (!data?.length) return fallbackProjects
-    return data.map(mapSanityProject)
-  } catch {
-    return fallbackProjects
-  }
+  const data = await client.fetch<SanityProject[]>(
+    PROJECTS_QUERY,
+    {},
+    sanityFetchOptions,
+  )
+  return data?.map(mapSanityProject) ?? []
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
-  try {
-    const data = await client.fetch<SanityProject | null>(PROJECT_BY_SLUG_QUERY, { slug })
-    if (!data) return null
-    return mapSanityProject(data)
-  } catch {
-    return null
-  }
+  const data = await client.fetch<SanityProject | null>(
+    PROJECT_BY_SLUG_QUERY,
+    { slug },
+    sanityFetchOptions,
+  )
+  return data ? mapSanityProject(data) : null
 }
