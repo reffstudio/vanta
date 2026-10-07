@@ -123,6 +123,12 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+html,
+body {
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
     color-scheme: dark;
