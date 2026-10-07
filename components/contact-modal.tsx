@@ -21,6 +21,11 @@ const MONTHS = [
   "Diciembre",
 ]
 
+const PHONE_CODES = [
+  { code: "+52", label: "México +52" },
+  { code: "+1", label: "USA +1" },
+] as const
+
 const TIME_SLOTS = [
   "09:00",
   "09:30",
@@ -146,6 +151,7 @@ export function ContactModal({
   const [submitError, setSubmitError] = useState("")
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState("")
+  const [phoneCode, setPhoneCode] = useState<(typeof PHONE_CODES)[number]["code"]>("+52")
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -168,6 +174,7 @@ export function ContactModal({
       setSubmitError("")
       setSelectedDate(null)
       setSelectedTime("")
+      setPhoneCode("+52")
     }
   }, [open])
 
@@ -242,7 +249,7 @@ export function ContactModal({
                         body: JSON.stringify({
                           name: data.get("name"),
                           email: data.get("email"),
-                          phone: data.get("phone"),
+                          phone: `${phoneCode} ${String(data.get("phone") ?? "").trim()}`,
                           service: data.get("service"),
                           date: data.get("date"),
                           time: data.get("time"),
@@ -289,14 +296,33 @@ export function ContactModal({
                       <label htmlFor="phone" className="mb-1.5 block text-xs font-medium text-neutral-300">
                         Teléfono
                       </label>
-                      <input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        required
-                        placeholder="+1 555 123 4567"
-                        className={fieldClass}
-                      />
+                      <div className="flex gap-2">
+                        <select
+                          id="phone-code"
+                          name="phoneCode"
+                          aria-label="Código de país"
+                          value={phoneCode}
+                          onChange={(e) =>
+                            setPhoneCode(e.target.value as (typeof PHONE_CODES)[number]["code"])
+                          }
+                          className={`${fieldClass} w-[7.5rem] shrink-0`}
+                        >
+                          {PHONE_CODES.map(({ code, label }) => (
+                            <option key={code} value={code} className="bg-neutral-900">
+                              {label}
+                            </option>
+                          ))}
+                        </select>
+                        <input
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          required
+                          inputMode="tel"
+                          placeholder={phoneCode === "+52" ? "646 123 4567" : "555 123 4567"}
+                          className={fieldClass}
+                        />
+                      </div>
                     </div>
                     <div>
                       <label htmlFor="service" className="mb-1.5 block text-xs font-medium text-neutral-300">
