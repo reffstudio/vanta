@@ -223,9 +223,10 @@ export function ContactModal({
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand text-brand-foreground">
                   <Check className="h-8 w-8" />
                 </div>
-                <h2 className="mt-6 text-2xl font-bold text-white">¡Sesión agendada!</h2>
-                <p className="mt-2 max-w-xs text-sm leading-relaxed text-neutral-400 text-pretty">
-                  Gracias por escribir. Le responderemos muy pronto para confirmar los detalles de la sesión.
+                <h2 className="mt-6 text-2xl font-bold text-white">Solicitud recibida</h2>
+                <p className="mt-2 max-w-sm text-sm leading-relaxed text-neutral-400 text-pretty">
+                  Revisaremos su solicitud y le contactaremos para confirmar disponibilidad y detalles.
+                  La sesión no queda agendada hasta esa confirmación.
                 </p>
               </div>
             ) : (

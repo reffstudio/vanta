@@ -1,13 +1,9 @@
-import { NextResponse } from "next/server"
+import { after, NextResponse } from "next/server"
 
 const FIELDS = ["name", "email", "phone", "service", "date", "time", "message"] as const
 
 function asSheetText(value: string) {
   return value.startsWith("'") ? value : `'${value}`
-}
-
-function sheetsAccepted(status: number) {
-  return (status >= 200 && status < 400) || status === 405
 }
 
 export async function POST(request: Request) {
@@ -38,19 +34,14 @@ export async function POST(request: Request) {
   // Sheets trata un valor que empieza con + como fórmula (#ERROR!).
   payload.phone = asSheetText(payload.phone)
 
-  const response = await fetch(webhookUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-    redirect: "manual",
-  })
-
-  if (!sheetsAccepted(response.status)) {
-    return NextResponse.json(
-      { error: "No se pudo guardar la solicitud. Intenta de nuevo." },
-      { status: 502 },
-    )
-  }
+  after(() =>
+    fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      redirect: "manual",
+    }).catch(() => undefined),
+  )
 
   return NextResponse.json({ ok: true })
 }
