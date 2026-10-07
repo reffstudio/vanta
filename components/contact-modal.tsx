@@ -142,6 +142,8 @@ export function ContactModal({
   onClose: () => void
 }) {
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState("")
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState("")
 
@@ -162,6 +164,8 @@ export function ContactModal({
   useEffect(() => {
     if (!open) {
       setSubmitted(false)
+      setSubmitting(false)
+      setSubmitError("")
       setSelectedDate(null)
       setSelectedTime("")
     }
@@ -224,9 +228,38 @@ export function ContactModal({
 
                 <form
                   className="mt-6 space-y-4"
-                  onSubmit={(e) => {
+                  onSubmit={async (e) => {
                     e.preventDefault()
-                    setSubmitted(true)
+                    const form = e.currentTarget
+                    const data = new FormData(form)
+                    setSubmitting(true)
+                    setSubmitError("")
+
+                    try {
+                      const response = await fetch("/api/agendar", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          name: data.get("name"),
+                          email: data.get("email"),
+                          phone: data.get("phone"),
+                          service: data.get("service"),
+                          date: data.get("date"),
+                          time: data.get("time"),
+                          message: data.get("message"),
+                        }),
+                      })
+
+                      if (!response.ok) {
+                        throw new Error("submit-failed")
+                      }
+
+                      setSubmitted(true)
+                    } catch {
+                      setSubmitError("No se pudo enviar. Intenta de nuevo en un momento.")
+                    } finally {
+                      setSubmitting(false)
+                    }
                   }}
                 >
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -330,11 +363,14 @@ export function ContactModal({
                     />
                   </div>
 
+                  {submitError ? <p className="text-sm text-red-400">{submitError}</p> : null}
+
                   <button
                     type="submit"
-                    className="w-full rounded-xl bg-brand px-4 py-3.5 text-sm font-semibold text-brand-foreground transition hover:brightness-110 active:scale-[0.99]"
+                    disabled={submitting}
+                    className="w-full rounded-xl bg-brand px-4 py-3.5 text-sm font-semibold text-brand-foreground transition hover:brightness-110 active:scale-[0.99] disabled:cursor-wait disabled:opacity-70"
                   >
-                    Agendar sesión
+                    {submitting ? "Enviando..." : "Agendar sesión"}
                   </button>
                 </form>
               </>

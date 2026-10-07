@@ -148,8 +148,11 @@ export const projects: Project[] = [
 ]
 
 export const services = [
-  "Conciertos / Eventos Masivos",
+  "Concierto",
+  "Evento",
   "Sesión Personal",
-  "Pareja / Familia",
+  "Sesión Pareja / Familia",
+  "Boda",
+  "Save the Date",
   "Otro",
 ] as const
