@@ -61,13 +61,16 @@ export function HomePage({ projects }: { projects: Project[] }) {
         </motion.div>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-4 z-40 flex flex-col items-center gap-3 px-4 sm:bottom-6">
+      <div className="pointer-events-none absolute inset-x-0 top-4 z-40 flex justify-center px-4 pt-[env(safe-area-inset-top)] sm:top-6">
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-4 py-2 text-xs text-neutral-300 backdrop-blur-md">
           <span className="vanta-pointer-press inline-flex">
             <Pointer className="h-3.5 w-3.5 text-brand" />
           </span>
           <span>Mantén presionado un proyecto para abrir</span>
         </div>
+      </div>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-4 z-40 flex justify-center px-4 sm:bottom-6">
         <PoweredByReff />
       </div>
 
