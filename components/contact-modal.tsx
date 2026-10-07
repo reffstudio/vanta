@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
-import { X, Check, ChevronLeft, ChevronRight } from "lucide-react"
+import { X, Check, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { services } from "@/lib/projects"
 
 const WEEKDAYS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
@@ -152,6 +152,8 @@ export function ContactModal({
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState("")
   const [phoneCode, setPhoneCode] = useState<(typeof PHONE_CODES)[number]["code"]>("+52")
+  const [phoneMenuOpen, setPhoneMenuOpen] = useState(false)
+  const selectedPhone = PHONE_CODES.find((item) => item.code === phoneCode) ?? PHONE_CODES[0]
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -175,6 +177,7 @@ export function ContactModal({
       setSelectedDate(null)
       setSelectedTime("")
       setPhoneCode("+52")
+      setPhoneMenuOpen(false)
     }
   }, [open])
 
@@ -296,28 +299,37 @@ export function ContactModal({
                       <label htmlFor="phone" className="mb-1.5 block text-xs font-medium text-neutral-300">
                         Teléfono
                       </label>
-                      <div className="flex h-11 items-center rounded-xl border border-white/10 bg-neutral-900 transition focus-within:border-brand focus-within:ring-1 focus-within:ring-brand">
-                        <label htmlFor="phone-code" className="sr-only">
-                          Código de país
-                        </label>
-                        <div className="relative flex h-full shrink-0 items-center">
-                          <select
-                            id="phone-code"
-                            name="phoneCode"
-                            value={phoneCode}
-                            onChange={(e) =>
-                              setPhoneCode(e.target.value as (typeof PHONE_CODES)[number]["code"])
-                            }
-                            className="h-full appearance-none bg-transparent pl-3 pr-6 text-sm leading-none text-white outline-none"
-                          >
-                            {PHONE_CODES.map(({ code, flag }) => (
-                              <option key={code} value={code} className="bg-neutral-900">
-                                {flag} {code}
-                              </option>
+                      <div className="relative flex h-11 items-center rounded-xl border border-white/10 bg-neutral-900 transition focus-within:border-brand focus-within:ring-1 focus-within:ring-brand">
+                        <button
+                          type="button"
+                          aria-label={`Código de país: ${selectedPhone.label} ${selectedPhone.code}`}
+                          aria-expanded={phoneMenuOpen}
+                          onClick={() => setPhoneMenuOpen((open) => !open)}
+                          className="flex h-full shrink-0 items-center gap-1.5 pl-3 pr-2 text-sm text-white"
+                        >
+                          <span aria-hidden="true">{selectedPhone.flag}</span>
+                          <span>{selectedPhone.code}</span>
+                          <ChevronDown className="h-3.5 w-3.5 text-neutral-500" />
+                        </button>
+                        {phoneMenuOpen ? (
+                          <div className="absolute left-0 top-[calc(100%+6px)] z-20 min-w-[9.5rem] overflow-hidden rounded-xl border border-white/10 bg-neutral-900 py-1 shadow-xl">
+                            {PHONE_CODES.map((item) => (
+                              <button
+                                key={item.code}
+                                type="button"
+                                onClick={() => {
+                                  setPhoneCode(item.code)
+                                  setPhoneMenuOpen(false)
+                                }}
+                                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-white transition hover:bg-white/10"
+                              >
+                                <span aria-hidden="true">{item.flag}</span>
+                                <span>{item.code}</span>
+                                <span className="text-neutral-500">{item.label}</span>
+                              </button>
                             ))}
-                          </select>
-                          <ChevronDown className="pointer-events-none absolute right-1 h-3.5 w-3.5 text-neutral-500" />
-                        </div>
+                          </div>
+                        ) : null}
                         <span className="h-5 w-px shrink-0 bg-white/15" aria-hidden="true" />
                         <input
                           id="phone"
