@@ -22,8 +22,8 @@ const MONTHS = [
 ]
 
 const PHONE_CODES = [
-  { code: "+52", label: "México +52" },
-  { code: "+1", label: "USA +1" },
+  { code: "+52", flag: "🇲🇽", label: "México" },
+  { code: "+1", flag: "🇺🇸", label: "USA" },
 ] as const
 
 const TIME_SLOTS = [
@@ -179,7 +179,7 @@ export function ContactModal({
   }, [open])
 
   const fieldClass =
-    "w-full rounded-xl border border-white/10 bg-neutral-900 px-4 py-3 text-sm text-white placeholder:text-neutral-500 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand"
+    "h-11 w-full appearance-none rounded-xl border border-white/10 bg-neutral-900 px-4 text-sm leading-none text-white placeholder:text-neutral-500 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand"
 
   const dateLabel = selectedDate
     ? `${selectedDate.getDate()} de ${MONTHS[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`
@@ -296,23 +296,29 @@ export function ContactModal({
                       <label htmlFor="phone" className="mb-1.5 block text-xs font-medium text-neutral-300">
                         Teléfono
                       </label>
-                      <div className="flex gap-2">
-                        <select
-                          id="phone-code"
-                          name="phoneCode"
-                          aria-label="Código de país"
-                          value={phoneCode}
-                          onChange={(e) =>
-                            setPhoneCode(e.target.value as (typeof PHONE_CODES)[number]["code"])
-                          }
-                          className={`${fieldClass} w-[7.5rem] shrink-0`}
-                        >
-                          {PHONE_CODES.map(({ code, label }) => (
-                            <option key={code} value={code} className="bg-neutral-900">
-                              {label}
-                            </option>
-                          ))}
-                        </select>
+                      <div className="flex h-11 items-center rounded-xl border border-white/10 bg-neutral-900 transition focus-within:border-brand focus-within:ring-1 focus-within:ring-brand">
+                        <label htmlFor="phone-code" className="sr-only">
+                          Código de país
+                        </label>
+                        <div className="relative flex h-full shrink-0 items-center">
+                          <select
+                            id="phone-code"
+                            name="phoneCode"
+                            value={phoneCode}
+                            onChange={(e) =>
+                              setPhoneCode(e.target.value as (typeof PHONE_CODES)[number]["code"])
+                            }
+                            className="h-full appearance-none bg-transparent pl-3 pr-6 text-sm leading-none text-white outline-none"
+                          >
+                            {PHONE_CODES.map(({ code, flag }) => (
+                              <option key={code} value={code} className="bg-neutral-900">
+                                {flag} {code}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronDown className="pointer-events-none absolute right-1 h-3.5 w-3.5 text-neutral-500" />
+                        </div>
+                        <span className="h-5 w-px shrink-0 bg-white/15" aria-hidden="true" />
                         <input
                           id="phone"
                           name="phone"
@@ -320,7 +326,7 @@ export function ContactModal({
                           required
                           inputMode="tel"
                           placeholder={phoneCode === "+52" ? "646 123 4567" : "555 123 4567"}
-                          className={fieldClass}
+                          className="h-full min-w-0 flex-1 bg-transparent px-3 text-sm leading-none text-white placeholder:text-neutral-500 outline-none"
                         />
                       </div>
                     </div>
@@ -328,16 +334,19 @@ export function ContactModal({
                       <label htmlFor="service" className="mb-1.5 block text-xs font-medium text-neutral-300">
                         Servicio
                       </label>
-                      <select id="service" name="service" required defaultValue="" className={fieldClass}>
-                        <option value="" disabled>
-                          Selecciona un servicio
-                        </option>
-                        {services.map((s) => (
-                          <option key={s} value={s} className="bg-neutral-900">
-                            {s}
+                      <div className="relative">
+                        <select id="service" name="service" required defaultValue="" className={`${fieldClass} pr-10`}>
+                          <option value="" disabled>
+                            Selecciona un servicio
                           </option>
-                        ))}
-                      </select>
+                          {services.map((s) => (
+                            <option key={s} value={s} className="bg-neutral-900">
+                              {s}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                      </div>
                     </div>
                   </div>
 
@@ -357,23 +366,26 @@ export function ContactModal({
                     <label htmlFor="time" className="mb-1.5 block text-xs font-medium text-neutral-300">
                       Hora deseada
                     </label>
-                    <select
-                      id="time"
-                      name="time"
-                      required
-                      value={selectedTime}
-                      onChange={(e) => setSelectedTime(e.target.value)}
-                      className={fieldClass}
-                    >
-                      <option value="" disabled>
-                        Selecciona una hora
-                      </option>
-                      {TIME_SLOTS.map((t) => (
-                        <option key={t} value={t} className="bg-neutral-900">
-                          {t} hrs
+                    <div className="relative">
+                      <select
+                        id="time"
+                        name="time"
+                        required
+                        value={selectedTime}
+                        onChange={(e) => setSelectedTime(e.target.value)}
+                        className={`${fieldClass} pr-10`}
+                      >
+                        <option value="" disabled>
+                          Selecciona una hora
                         </option>
-                      ))}
-                    </select>
+                        {TIME_SLOTS.map((t) => (
+                          <option key={t} value={t} className="bg-neutral-900">
+                            {t} hrs
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                    </div>
                   </div>
 
                   <div>
@@ -385,7 +397,7 @@ export function ContactModal({
                       name="message"
                       rows={4}
                       placeholder="Describe la idea o el proyecto..."
-                      className={`${fieldClass} resize-none`}
+                      className="w-full resize-none rounded-xl border border-white/10 bg-neutral-900 px-4 py-3 text-sm text-white placeholder:text-neutral-500 outline-none transition focus:border-brand focus:ring-1 focus:ring-brand"
                     />
                   </div>
 
